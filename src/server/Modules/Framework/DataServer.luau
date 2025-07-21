@@ -11,6 +11,8 @@ local IS_STUDIO = RunService:IsStudio()
 local STUDIO_VERSION = "0.0.0"
 local GAME_VERSION = "0.0.0"
 
+local MOCK = false
+
 local DATA_VERSION = if IS_STUDIO then STUDIO_VERSION else GAME_VERSION
 
 local MAX_DATA_RETRIES = 10
@@ -72,7 +74,7 @@ function Data:Create(player: Player)
 	local userId = player.UserId
 
 	for _ = 1, MAX_DATA_RETRIES do
-		playerSession = self._profileStore:StartSessionAsync(`{DATA_VERSION}_{userId}`, {
+		playerSession = self._profileStore:StartSessionAsync(`{userId}_{DATA_VERSION}`, {
 			Cancel = function()
 				return player.Parent ~= Players
 			end,
@@ -125,7 +127,7 @@ function Data:Create(player: Player)
 	local dataMimic = setmetatable({}, {
 		__index = playerData,
 		__tostring = function()
-			return ""
+			return "Print a specific index of the player data"
 		end,
 		__newindex = function(_, key: string, newValue: any)
 			local oldValue = playerData[key]
@@ -167,7 +169,7 @@ end
 do
 	local profileStore = ProfileStore.New(if IS_STUDIO then "Studio" else "Game", DATA_TEMPLATE)
 
-	Data._profileStore = profileStore
+	Data._profileStore = if MOCK then profileStore.Mock else profileStore
 end
 
 do

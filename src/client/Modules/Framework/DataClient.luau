@@ -53,7 +53,7 @@ do
 			ON_LOADED_CALLBACKS = onLoadedCallbacks
 		end
 
-		table.insert(onLoadedCallbacks, callback)
+		table.insert(onLoadedCallbacks, callback, CLIENT_DATA)
 	end
 end
 
@@ -63,6 +63,8 @@ do
 	do
 		DataServer.Changed:Connect(function(key: string, oldValue: any, newValue: any)
 			print("Data changed:", key, oldValue, newValue)
+
+			CLIENT_DATA[key] = newValue
 
 			do
 				local onChangedCallbacks = ON_CHANGED_CALLBACKS[key]
@@ -81,6 +83,8 @@ do
 
 		DataServer.Loaded:Once(function(playerData: PlayerData)
 			print("Data loaded:", playerData)
+
+			CLIENT_DATA = playerData
 
 			do
 				local onLoadedCallbacks = ON_LOADED_CALLBACKS

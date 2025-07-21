@@ -18,15 +18,7 @@ end
 function Clicks:Click(player: Player)
 	local playerData = DataServer:GetAsync(player)
 
-	if not playerData then
-		return
-	end
-
-	print(playerData.Clicks)
-
 	playerData.Clicks += 1
-
-	print(playerData.Clicks)
 end
 
 do
